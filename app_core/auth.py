@@ -65,7 +65,8 @@ class LoginDialog(QDialog):
     def _build_ui(self) -> None:
         self.setWindowTitle("Iniciar sesion")
         self.setModal(True)
-        self.setMinimumWidth(420)
+        self.setMinimumWidth(520)
+        self.resize(560, 380)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(24, 24, 24, 24)
@@ -74,14 +75,24 @@ class LoginDialog(QDialog):
         # Card container to give a consistent framed login area
         card = QFrame()
         card.setObjectName("loginCard")
-        card.setMinimumWidth(360)
+        card.setMinimumWidth(420)
         card_layout = QVBoxLayout(card)
         card_layout.setContentsMargins(18, 18, 18, 18)
-        card_layout.setSpacing(12)
+        card_layout.setSpacing(14)
+
+        # Logo + title row
+        header_row = QHBoxLayout()
+        logo = QLabel("ATG")
+        logo.setObjectName("loginLogo")
+        logo.setFixedSize(54, 54)
+        logo.setAlignment(Qt.AlignCenter)
 
         header = QLabel("A Tu Gusto")
         header.setObjectName("loginTitle")
-        header.setAlignment(Qt.AlignCenter)
+        header.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        header_row.addWidget(logo)
+        header_row.addSpacing(8)
+        header_row.addWidget(header)
 
         subtitle = QLabel("Gestion integrada para compras, cocina, ventas y cierres.")
         subtitle.setWordWrap(True)
@@ -112,6 +123,7 @@ class LoginDialog(QDialog):
 
         self.cancel_button = QPushButton("Salir")
         self.login_button = QPushButton("Entrar")
+        self.login_button.setDefault(True)
         self.login_button.setObjectName("primaryButton")
 
         self.cancel_button.clicked.connect(self.reject)
@@ -122,13 +134,18 @@ class LoginDialog(QDialog):
         button_row.addWidget(self.cancel_button)
         button_row.addWidget(self.login_button)
 
-        card_layout.addWidget(header)
+        # assemble card
+        # header row (logo + title)
+        card_layout.addLayout(header_row)
         card_layout.addWidget(subtitle)
         card_layout.addLayout(form_layout)
         card_layout.addWidget(hint)
         card_layout.addLayout(button_row)
 
         layout.addWidget(card, alignment=Qt.AlignCenter)
+
+        # focus and UX
+        self.username_input.setFocus()
 
     def handle_login(self) -> None:
         result = self.auth_service.authenticate(

@@ -236,4 +236,28 @@ QWidget#pedidosChefWidget QTableWidget#historialTable {
     gridline-color: rgba(36,59,58,0.04);
 }
 
+/* ---------- Dashboard / Charts ---------- */
+QFrame#dashboardCard {
+    background: #ffffff;
+    border: 1px solid rgba(36,59,58,0.06);
+    border-radius: 10px;
+}
+
+QLabel#metricValue {
+    font-size: 20px;
+    font-weight: 800;
+    color: #157a6e;
+}
+
+QFrame#chartsPlaceholder { margin-top: 8px; }
+
+QFrame#chartPlaceholder {
+    background: #ffffff;
+    border: 1px dashed rgba(36,59,58,0.04);
+    border-radius: 8px;
+    min-height: 120px;
+}
+
+QTableWidget#alertsTable { min-height: 160px; }
+
 /* END OF CENTRAL STYLESHEET */

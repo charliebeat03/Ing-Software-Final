@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, timedelta
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
@@ -14,6 +14,13 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
+try:
+    import pyqtgraph as pg
+    from pyqtgraph import PlotWidget
+    PG_AVAILABLE = True
+except Exception:
+    PG_AVAILABLE = False
 
 
 class DashboardWidget(QWidget):
@@ -93,25 +100,48 @@ class DashboardWidget(QWidget):
         alerts_layout.addWidget(alerts_title)
         alerts_layout.addWidget(self.alerts_table)
 
-        # Add a small charts area placeholder for future graphs
+        # Charts area (plots or graceful fallbacks)
         charts_frame = QFrame()
         charts_frame.setObjectName("chartsPlaceholder")
         charts_layout = QHBoxLayout(charts_frame)
         charts_layout.setContentsMargins(0, 8, 0, 0)
         charts_layout.setSpacing(12)
 
-        sales_chart = QFrame()
-        sales_chart.setObjectName("chartPlaceholder")
-        sales_chart.setMinimumHeight(120)
-        purchases_chart = QFrame()
-        purchases_chart.setObjectName("chartPlaceholder")
-        purchases_chart.setMinimumHeight(120)
+        if PG_AVAILABLE:
+            # interactive lightweight plots
+            self.sales_plot = PlotWidget()
+            self.sales_plot.setObjectName("salesPlot")
+            self.sales_plot.setBackground('w')
 
-        charts_layout.addWidget(sales_chart, 1)
-        charts_layout.addWidget(purchases_chart, 1)
+            self.purchases_plot = PlotWidget()
+            self.purchases_plot.setObjectName("purchasesPlot")
+            self.purchases_plot.setBackground('w')
+
+            charts_layout.addWidget(self.sales_plot, 1)
+            charts_layout.addWidget(self.purchases_plot, 1)
+        else:
+            sales_chart = QFrame()
+            sales_chart.setObjectName("chartPlaceholder")
+            sales_chart.setMinimumHeight(120)
+            sales_chart_layout = QVBoxLayout(sales_chart)
+            self.sales_fallback_label = QLabel("Ventas: N/D")
+            self.sales_fallback_label.setAlignment(Qt.AlignCenter)
+            sales_chart_layout.addWidget(self.sales_fallback_label)
+
+            purchases_chart = QFrame()
+            purchases_chart.setObjectName("chartPlaceholder")
+            purchases_chart.setMinimumHeight(120)
+            purchases_chart_layout = QVBoxLayout(purchases_chart)
+            self.purchases_fallback_label = QLabel("Compras: N/D")
+            self.purchases_fallback_label.setAlignment(Qt.AlignCenter)
+            purchases_chart_layout.addWidget(self.purchases_fallback_label)
+
+            charts_layout.addWidget(sales_chart, 1)
+            charts_layout.addWidget(purchases_chart, 1)
 
         layout.addLayout(cards_layout)
         layout.addWidget(actions_frame)
+        layout.addWidget(charts_frame)
         layout.addWidget(alerts_frame, 1)
 
     def _create_metric_card(self, title: str) -> dict:
@@ -178,6 +208,54 @@ class DashboardWidget(QWidget):
         self.alerts_card["detail"].setText("Ingredientes o productos con stock comprometido.")
 
         self._fill_alerts_table(ingredientes_bajos)
+        # update small trend charts (7-day)
+        try:
+            xs_sales, ys_sales = self._gather_daily_series(ventas, kind='ventas', days=7)
+            xs_comp, ys_comp = self._gather_daily_series(compras, kind='compras', days=7)
+            self._update_charts(xs_sales, ys_sales, xs_comp, ys_comp)
+        except Exception:
+            # don't break the whole refresh if plotting fails
+            pass
+
+    def _gather_daily_series(self, service, kind: str = 'ventas', days: int = 7):
+        xs = []
+        ys = []
+        for i in range(days - 1, -1, -1):
+            d = date.today() - timedelta(days=i)
+            dstr = d.strftime('%Y-%m-%d')
+            if kind == 'ventas':
+                val = getattr(service, 'obtener_total_ventas_dia', lambda *_: 0)(dstr)
+            else:
+                # compras expects (start, end)
+                val = getattr(service, 'obtener_total_compras_periodo', lambda a, b: 0)(dstr, dstr)
+            xs.append(d.strftime('%d/%m'))
+            ys.append(float(val or 0))
+        return xs, ys
+
+    def _update_charts(self, xs_sales, ys_sales, xs_comp, ys_comp):
+        if PG_AVAILABLE:
+            try:
+                self.sales_plot.clear()
+                self.purchases_plot.clear()
+                pen_sales = pg.mkPen('#157a6e', width=2)
+                pen_comp = pg.mkPen('#2b8fbd', width=2)
+                self.sales_plot.plot(list(range(len(ys_sales))), ys_sales, pen=pen_sales, symbol='o', symbolBrush='#157a6e')
+                self.purchases_plot.plot(list(range(len(ys_comp))), ys_comp, pen=pen_comp, symbol='o', symbolBrush='#2b8fbd')
+                # set x axis ticks to day labels
+                try:
+                    self.sales_plot.getAxis('bottom').setTicks([list(enumerate(xs_sales))])
+                    self.purchases_plot.getAxis('bottom').setTicks([list(enumerate(xs_comp))])
+                except Exception:
+                    pass
+            except Exception:
+                pass
+        else:
+            # fallback: show totals in labels
+            try:
+                self.sales_fallback_label.setText(f"Ventas (7d): {sum(ys_sales):,.2f}")
+                self.purchases_fallback_label.setText(f"Compras (7d): {sum(ys_comp):,.2f}")
+            except Exception:
+                pass
 
     def _fill_alerts_table(self, rows: list[dict]) -> None:
         self.alerts_table.setRowCount(0)
