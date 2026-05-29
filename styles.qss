@@ -28,7 +28,7 @@ QFrame#shellSidebar {
 
 QFrame#shellHeader {
     background: #ffffff;
-    border-bottom: 1px solid rgba(0,0,0,0.06);
+    border-bottom: none;
 }
 
 QFrame#shellContent {
@@ -259,5 +259,16 @@ QFrame#chartPlaceholder {
 }
 
 QTableWidget#alertsTable { min-height: 160px; }
+
+/* Sidebar toggle button */
+QPushButton#sidebarToggleButton {
+    min-width: 36px;
+    min-height: 36px;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #157a6e;
+    border: 1px solid rgba(36,59,58,0.06);
+}
+QPushButton#sidebarToggleButton:hover { background: #f2f6f6; }
 
 /* END OF CENTRAL STYLESHEET */

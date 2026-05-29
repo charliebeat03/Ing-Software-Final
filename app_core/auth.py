@@ -158,3 +158,18 @@ class LoginDialog(QDialog):
 
         self.authenticated_user = result.user
         self.accept()
+
+    def accept(self) -> None:
+        """Only accept dialog if authentication succeeded."""
+        if not self.authenticated_user:
+            QMessageBox.warning(self, "Acceso denegado", "Credenciales inválidas. Verifique usuario y contraseña.")
+            return
+        super().accept()
+
+    def keyPressEvent(self, event) -> None:
+        # Intercept Enter/Return to avoid accidental dialog close and force handle_login
+        from PyQt5.QtCore import Qt
+        if event.key() in (Qt.Key_Return, Qt.Key_Enter):
+            self.handle_login()
+            return
+        super().keyPressEvent(event)

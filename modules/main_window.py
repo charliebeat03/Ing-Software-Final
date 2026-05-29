@@ -49,10 +49,10 @@ class MainWindow(QMainWindow):
         central_layout.setSpacing(0)
         self.setCentralWidget(central)
 
-        sidebar = self._build_sidebar()
+        self.sidebar = self._build_sidebar()
         content = self._build_content_area()
 
-        central_layout.addWidget(sidebar)
+        central_layout.addWidget(self.sidebar)
         central_layout.addWidget(content, 1)
 
         status_bar = QStatusBar()
@@ -135,12 +135,19 @@ class MainWindow(QMainWindow):
         self.backup_button.setObjectName("quickActionButton")
         self.backup_button.clicked.connect(self.trigger_backup)
 
+        # Sidebar toggle button
+        self.toggle_sidebar_button = QPushButton("❮")
+        self.toggle_sidebar_button.setObjectName("sidebarToggleButton")
+        self.toggle_sidebar_button.setFixedSize(36, 36)
+        self.toggle_sidebar_button.clicked.connect(self.toggle_sidebar)
+
         right_box = QVBoxLayout()
         right_box.setSpacing(4)
         right_box.addWidget(self.user_label, alignment=Qt.AlignRight)
         right_box.addWidget(self.date_label, alignment=Qt.AlignRight)
 
         header_layout.addLayout(title_box, 1)
+        header_layout.addWidget(self.toggle_sidebar_button)
         header_layout.addWidget(self.backup_button)
         header_layout.addSpacing(12)
         header_layout.addLayout(right_box)
@@ -265,3 +272,16 @@ class MainWindow(QMainWindow):
             if callable(cleanup):
                 cleanup()
         event.accept()
+
+    def toggle_sidebar(self) -> None:
+        """Show or hide the left sidebar."""
+        if not hasattr(self, "sidebar") or self.sidebar is None:
+            return
+        if self.sidebar.isVisible():
+            self.sidebar.hide()
+            self.toggle_sidebar_button.setText("❯")
+            self.statusBar().showMessage("Barra lateral oculta.")
+        else:
+            self.sidebar.show()
+            self.toggle_sidebar_button.setText("❮")
+            self.statusBar().showMessage("Barra lateral mostrada.")
