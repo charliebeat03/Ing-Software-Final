@@ -1,0 +1,239 @@
+/* ==================================================================== */
+/* CENTRAL STYLESHEET - A TU GUSTO                                  */
+/* - Centraliza todo el estilo de la aplicación.                     */
+/* - NO modificar en vistas individuales; cambie aquí para mantener    */
+/*   coherencia visual.                                                */
+/* ==================================================================== */
+
+/* Palette */
+/* primary: #157a6e, accent: #2b8fbd, neutral: #f4f6f8 / #ffffff */
+
+* {
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+    font-size: 11px;
+    color: #2c3e50;
+}
+
+QWidget {
+    background-color: #f4f6f8;
+    color: #2c3e50;
+}
+
+/* ---------- App shell ---------- */
+QFrame#shellSidebar {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #123236, stop:1 #173f3b);
+    color: #eef6f5;
+    border-right: 1px solid rgba(0,0,0,0.06);
+}
+
+QFrame#shellHeader {
+    background: #ffffff;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+QFrame#shellContent {
+    background: transparent;
+}
+
+QLabel#brandTitle {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+QLabel#brandSubtitle {
+    color: #d6e9e6;
+    font-size: 11px;
+}
+
+QLabel#sectionTitle {
+    color: #cfe7e4;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+QPushButton#sidebarButton {
+    background: transparent;
+    color: #dff6f4;
+    border: none;
+    text-align: left;
+    padding: 10px 12px;
+    border-radius: 8px;
+}
+
+QPushButton#sidebarButton:hover { background: rgba(255,255,255,0.04); }
+QPushButton#sidebarButton:checked { background: #157a6e; color: white; }
+
+/* ---------- Header / Module title ---------- */
+QLabel#moduleTitle {
+    font-size: 22px;
+    font-weight: 800;
+    color: #243b3a;
+}
+
+QLabel#moduleSubtitle {
+    color: #6b7e86;
+    font-size: 12px;
+}
+
+QLabel#moduleDate, QLabel#userLabel {
+    color: #6b7e86;
+    font-weight: 600;
+}
+
+/* ---------- Login ---------- */
+QFrame#loginCard {
+    background: #ffffff;
+    border: 1px solid rgba(36,59,58,0.06);
+    border-radius: 12px;
+    padding: 18px;
+    min-width: 340px;
+    max-width: 520px;
+}
+
+QLabel#loginTitle {
+    font-size: 24px;
+    font-weight: 800;
+    color: #243b3a;
+}
+
+QLabel#loginSubtitle { color: #6b7e86; font-size: 12px; }
+
+QLabel#loginHint {
+    color: #6b7e86;
+    font-size: 10px;
+    background: #fbfbfb;
+    border: 1px solid #eef2f1;
+    border-radius: 6px;
+    padding: 8px;
+}
+
+/* ---------- Buttons ---------- */
+QPushButton {
+    min-height: 34px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(36,59,58,0.08);
+    background: #ffffff;
+    color: #243b3a;
+    font-weight: 600;
+}
+
+QPushButton:hover { background: #f2f6f6; }
+
+QPushButton#primaryButton, QPushButton#quickActionButton {
+    background: #157a6e;
+    color: white;
+    border: 1px solid #157a6e;
+}
+
+QPushButton#primaryButton:hover, QPushButton#quickActionButton:hover { background: #126b5f; }
+
+/* Icon-only small buttons */
+QPushButton[iconOnly="true"] { min-width: 36px; min-height: 36px; padding: 6px; }
+
+/* ---------- Forms and inputs ---------- */
+QLineEdit, QComboBox, QSpinBox, QDoubleSpinBox, QTextEdit, QDateEdit {
+    background: #ffffff;
+    border: 1px solid rgba(36,59,58,0.08);
+    border-radius: 8px;
+    padding: 6px 10px;
+    min-height: 34px;
+}
+
+QLineEdit:focus, QComboBox:focus, QSpinBox:focus { border-color: #157a6e; }
+
+/* ---------- Tables ---------- */
+QTableWidget, QTableView {
+    background: #ffffff;
+    alternate-background-color: #f9fbfb;
+    border: 1px solid rgba(36,59,58,0.06);
+    border-radius: 8px;
+    gridline-color: rgba(36,59,58,0.04);
+}
+
+QHeaderView::section {
+    background: #2c3d44;
+    color: white;
+    padding: 10px 8px;
+    border: none;
+    font-weight: 700;
+}
+
+QTableWidget::item:selected, QTableView::item:selected { background: #157a6e; color: white; }
+
+/* ---------- Scrollbars (subtle) ---------- */
+QScrollBar:vertical { background: transparent; width: 12px; }
+QScrollBar::handle:vertical { background: rgba(0,0,0,0.12); border-radius: 6px; }
+QScrollBar::handle:vertical:hover { background: rgba(0,0,0,0.18); }
+
+/* ---------- Status & Menus ---------- */
+QStatusBar { background: #ffffff; border-top: 1px solid rgba(36,59,58,0.04); color: #6b7e86; }
+
+QMenuBar { background: #ffffff; }
+QMenu { background: #ffffff; border: 1px solid rgba(36,59,58,0.06); }
+
+/* ---------- Feedback panels ---------- */
+QFrame.info_frame { background: #fff8e6; border: 1px solid #ffe9b8; border-radius: 8px; padding: 8px; }
+QFrame.warning_frame { background: #fff0f0; border: 1px solid #ffd6d6; border-radius: 8px; padding: 8px; }
+QFrame.success_frame { background: #eaf8f1; border: 1px solid #c9efdb; border-radius: 8px; padding: 8px; }
+
+/* ---------- Tooltips ---------- */
+QToolTip { background: #243b3a; color: white; border-radius: 4px; padding: 6px; }
+
+/* ---------- Small responsive hints (QSS has limited support) ---------- */
+/* Keep layouts responsive in code; use these only as hints. */
+
+/* ---------- Shared role-based selectors ---------- */
+QLabel[role="title"] { font-size: 15px; font-weight: 700; color: #243b3a; }
+QLabel[role="field"] { color: #243b3a; font-weight: 600; }
+QLabel[role="hint"] { font-size: 10px; color: #6b7e86; padding: 6px; background: #fbfbfb; border-radius: 6px; }
+QLabel[role="indicator"] { color: #2b8fbd; font-size: 11px; font-weight: 700; }
+QLabel[role="metricBadge"] { background: #2e7d32; color: white; font-weight: 700; padding: 4px 8px; border-radius: 4px; }
+QLabel[role="muted"] { color: #6b7e86; }
+QLabel[emphasis="strong"] { font-weight: 700; color: #243b3a; }
+
+/* ---------- Module-specific widget hooks (uniform look) ---------- */
+QWidget#ventasWidget QPushButton,
+QWidget#produccionWidget QPushButton,
+QWidget#pedidosChefWidget QPushButton,
+QWidget#inventarioWidget QPushButton,
+QWidget#historialWidget QPushButton,
+QWidget#excedentesWidget QPushButton,
+QWidget#dashboardWidget QPushButton,
+QWidget#comprasWidget QPushButton,
+QWidget#catalogosWidget QPushButton {
+    background-color: #157a6e;
+    color: white;
+    border: 1px solid #0f655b;
+    border-radius: 6px;
+    padding: 6px 12px;
+}
+
+QWidget#ventasWidget QPushButton:hover,
+QWidget#produccionWidget QPushButton:hover,
+QWidget#pedidosChefWidget QPushButton:hover,
+QWidget#inventarioWidget QPushButton:hover,
+QWidget#historialWidget QPushButton:hover,
+QWidget#excedentesWidget QPushButton:hover,
+QWidget#dashboardWidget QPushButton:hover,
+QWidget#comprasWidget QPushButton:hover,
+QWidget#catalogosWidget QPushButton:hover {
+    background-color: #126b5f;
+}
+
+QWidget#ventasWidget QTableWidget#ventasTable,
+QWidget#ventasWidget QTableWidget#historialTable,
+QWidget#produccionWidget QTableWidget#produccionTable,
+QWidget#pedidosChefWidget QTableWidget#pedidosTable,
+QWidget#pedidosChefWidget QTableWidget#historialTable {
+    font-size: 11px;
+    alternate-background-color: #f8f9fa;
+    selection-background-color: #157a6e;
+    selection-color: white;
+    border: 1px solid rgba(36,59,58,0.06);
+    gridline-color: rgba(36,59,58,0.04);
+}
+
+/* END OF CENTRAL STYLESHEET */
