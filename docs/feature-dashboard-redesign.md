@@ -17,3 +17,7 @@ Notes / next steps:
  - Implemented charts using `pyqtgraph` when available; fallbacks show numeric 7-day summaries when the plotting library is missing.
  - Enlarged and improved `LoginDialog` layout (logo + title row, wider card, Enter submits by default).
  - Updated `styles.qss` with rules for `dashboardCard`, `metricValue`, `chartPlaceholder` and `alertsTable`.
+ - Moved the sidebar toggle into the sidebar and added smooth collapse/expand animation.
+ - Reworked the left sidebar styling to remove visual artifacts and improve contrast.
+ - Added inline login validation (red field highlight + inline error message) and prevented dialog from closing on bad credentials.
+ - Added custom modal dialogs (`ConfirmDialog`, `InfoDialog`) with a professional visual style and replaced several default `QMessageBox` usages in the shell.
