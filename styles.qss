@@ -301,4 +301,9 @@ QPushButton#modalConfirm:hover { background: #126b5f; }
 QPushButton#modalCancel { background: transparent; border: 1px solid rgba(36,59,58,0.06); color: #243b3a; border-radius: 6px; padding: 6px 12px; }
 
 
+/* Inventory alert frames (styled, avoid raw box lines) */
+QFrame#inventarioAlertFrame[alertType="ok"] { background: #eaf8f1; border: 1px solid #c9efdb; border-radius: 6px; }
+QFrame#inventarioAlertFrame[alertType="warning"] { background: #fff8e6; border: 1px solid #ffe9b8; border-radius: 6px; }
+QFrame#inventarioAlertFrame[alertType="critical"] { background: #fff0f0; border: 1px solid #ffd6d6; border-radius: 6px; }
+
 /* END OF CENTRAL STYLESHEET */
