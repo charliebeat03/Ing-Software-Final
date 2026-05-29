@@ -845,7 +845,7 @@ class CatalogosWidget(QWidget):
                 if item:
                     # Obtener el precio sin formato
                     precio_sin_formato = item.data(Qt.UserRole)
-                    if precio_sin_formato:
+                    if precio_sin_formato is not None:
                         # Mostrar el precio sin símbolo de dólar para edición
                         nuevo_precio, ok = QInputDialog.getDouble(
                             self, "Editar Precio", 

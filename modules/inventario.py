@@ -300,24 +300,25 @@ class InventarioManager:
                 conn = get_connection()
                 cursor = conn.cursor()
                 
-                # Obtener pedidos del chef
+                # Obtener pedidos del chef (columnas explícitas para evitar errores de índices)
                 cursor.execute('''
-                    SELECT pc.*, i.nombre as ingrediente_nombre, um.abreviatura
+                    SELECT pc.id, pc.fecha, pc.ingrediente_id, pc.cantidad_total,
+                           i.nombre as ingrediente_nombre, um.abreviatura as unidad
                     FROM pedidos_chef pc
                     JOIN ingredientes i ON pc.ingrediente_id = i.id
-                    JOIN unidades_medida um ON i.unidad_medida_id = um.id
+                    LEFT JOIN unidades_medida um ON i.unidad_medida_id = um.id
                     WHERE pc.fecha = ?
                 ''', (fecha_str,))
-                
+
                 pedidos = []
                 for row in cursor.fetchall():
                     pedidos.append({
                         'id': row[0],
-                        'ingrediente_id': row[1],
-                        'ingrediente_nombre': row[6],
+                        'fecha': row[1],
+                        'ingrediente_id': row[2],
                         'cantidad_total': float(row[3]) if row[3] else 0.0,
-                        'unidad': row[7],
-                        'fecha': row[2]
+                        'ingrediente_nombre': row[4],
+                        'unidad': row[5] or ''
                     })
                 
                 # Obtener producción
@@ -379,30 +380,30 @@ class InventarioManager:
                 total_ventas_cantidad = sum(v.get('cantidad_total', 0) for v in ventas)
                 total_ventas_dinero = sum(v.get('total_dinero', 0) for v in ventas)
                 
-                # Obtener excedentes si existen
+                # Obtener excedentes si existen (relacionados a productos)
                 try:
                     cursor = conn.cursor()
                     cursor.execute('''
-                        SELECT e.*, i.nombre as ingrediente_nombre
+                        SELECT e.id, e.fecha, e.producto_id, e.producido, e.vendido, p.nombre as producto_nombre
                         FROM excedentes e
-                        JOIN ingredientes i ON e.ingrediente_id = i.id
+                        JOIN productos p ON e.producto_id = p.id
                         WHERE e.fecha = ?
                     ''', (fecha_str,))
-                    
+
                     excedentes = []
                     for row in cursor.fetchall():
                         excedentes.append({
                             'id': row[0],
-                            'ingrediente_id': row[1],
-                            'ingrediente_nombre': row[6],
+                            'producto_id': row[2],
+                            'producto_nombre': row[5],
                             'cantidad_excedente': float(row[3]) if row[3] else 0.0,
-                            'fecha': row[2],
-                            'motivo': row[4]
+                            'vendido': float(row[4]) if row[4] else 0.0,
+                            'fecha': row[1]
                         })
                     cursor.close()
-                except:
+                except Exception:
                     excedentes = []
-                
+
                 total_excedentes = sum(e.get('cantidad_excedente', 0) for e in excedentes)
                 
                 resumen = {

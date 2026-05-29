@@ -458,17 +458,18 @@ class InventarioWidget(QWidget):
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
             
-            # Consulta que une ingredientes con su inventario
+            # Consulta que une ingredientes con su inventario (columnas reales)
             cursor.execute('''
                 SELECT 
                     i.id,
                     i.nombre,
                     COALESCE(inv.cantidad_actual, 0) as cantidad_actual,
-                    i.unidad_medida as unidad,
-                    i.cantidad_minima,
+                    um.abreviatura as unidad,
+                    i.stock_minimo,
                     i.activo
                 FROM ingredientes i
                 LEFT JOIN inventario_ingredientes inv ON i.id = inv.ingrediente_id
+                LEFT JOIN unidades_medida um ON i.unidad_medida_id = um.id
                 WHERE i.activo = 1
                 ORDER BY i.nombre
             ''')
@@ -483,7 +484,7 @@ class InventarioWidget(QWidget):
                     'nombre': row['nombre'],
                     'cantidad_actual': row['cantidad_actual'],
                     'unidad': row['unidad'],
-                    'cantidad_minima': row['cantidad_minima'],
+                    'stock_minimo': row['stock_minimo'],
                     'activo': row['activo']
                 })
             
