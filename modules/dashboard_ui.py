@@ -112,10 +112,25 @@ class DashboardWidget(QWidget):
             self.sales_plot = PlotWidget()
             self.sales_plot.setObjectName("salesPlot")
             self.sales_plot.setBackground('w')
+            # Title and axis labels so user knows what each chart shows
+            try:
+                self.sales_plot.getPlotItem().setTitle("Ventas — últimos 7 días")
+                self.sales_plot.getPlotItem().setLabel('left', 'Total ($)')
+                self.sales_plot.getPlotItem().setLabel('bottom', 'Día')
+                self.sales_plot.addLegend(offset=(10, 10))
+            except Exception:
+                pass
 
             self.purchases_plot = PlotWidget()
             self.purchases_plot.setObjectName("purchasesPlot")
             self.purchases_plot.setBackground('w')
+            try:
+                self.purchases_plot.getPlotItem().setTitle("Compras — últimos 7 días")
+                self.purchases_plot.getPlotItem().setLabel('left', 'Total ($)')
+                self.purchases_plot.getPlotItem().setLabel('bottom', 'Día')
+                self.purchases_plot.addLegend(offset=(10, 10))
+            except Exception:
+                pass
 
             charts_layout.addWidget(self.sales_plot, 1)
             charts_layout.addWidget(self.purchases_plot, 1)
@@ -239,8 +254,8 @@ class DashboardWidget(QWidget):
                 self.purchases_plot.clear()
                 pen_sales = pg.mkPen('#157a6e', width=2)
                 pen_comp = pg.mkPen('#2b8fbd', width=2)
-                self.sales_plot.plot(list(range(len(ys_sales))), ys_sales, pen=pen_sales, symbol='o', symbolBrush='#157a6e')
-                self.purchases_plot.plot(list(range(len(ys_comp))), ys_comp, pen=pen_comp, symbol='o', symbolBrush='#2b8fbd')
+                self.sales_plot.plot(list(range(len(ys_sales))), ys_sales, pen=pen_sales, symbol='o', symbolBrush='#157a6e', name='Ventas')
+                self.purchases_plot.plot(list(range(len(ys_comp))), ys_comp, pen=pen_comp, symbol='o', symbolBrush='#2b8fbd', name='Compras')
                 # set x axis ticks to day labels
                 try:
                     self.sales_plot.getAxis('bottom').setTicks([list(enumerate(xs_sales))])

@@ -275,6 +275,20 @@ QPushButton#sidebarToggleButton:hover { background: #f2f6f6; }
 /* Ensure sidebar labels render cleanly */
 QFrame#shellSidebar QLabel { background: transparent; padding: 2px 0; }
 
+/* Ensure labels inside common framed panels render cleanly (avoid small background artifacts) */
+QFrame#shellHeader QLabel,
+QFrame#dashboardCard QLabel,
+QFrame#pageHero QLabel,
+QFrame#pagePanel QLabel,
+QFrame#toolbarCard QLabel,
+QFrame#summaryCard QLabel,
+QFrame#historialTitleFrame QLabel,
+QFrame#inventarioAlertFrame QLabel,
+QFrame#chartPlaceholder QLabel {
+    background: transparent;
+    padding: 2px 0;
+}
+
 /* Login validation / inline error */
 QLineEdit#loginUsername[invalid="true"], QLineEdit#loginPassword[invalid="true"] {
     border: 1px solid #d32f2f;
