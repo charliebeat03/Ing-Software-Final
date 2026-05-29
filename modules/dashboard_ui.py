@@ -35,23 +35,24 @@ class DashboardWidget(QWidget):
         layout.setContentsMargins(18, 18, 18, 18)
         layout.setSpacing(16)
 
-        cards_layout = QGridLayout()
-        cards_layout.setSpacing(14)
+        # Top metrics row
+        cards_layout = QHBoxLayout()
+        cards_layout.setSpacing(12)
 
         self.sales_card = self._create_metric_card("Ventas del dia")
         self.purchases_card = self._create_metric_card("Compras del dia")
         self.kitchen_card = self._create_metric_card("Pedidos de cocina")
         self.alerts_card = self._create_metric_card("Alertas activas")
 
-        cards_layout.addWidget(self.sales_card["frame"], 0, 0)
-        cards_layout.addWidget(self.purchases_card["frame"], 0, 1)
-        cards_layout.addWidget(self.kitchen_card["frame"], 1, 0)
-        cards_layout.addWidget(self.alerts_card["frame"], 1, 1)
+        cards_layout.addWidget(self.sales_card["frame"])
+        cards_layout.addWidget(self.purchases_card["frame"])
+        cards_layout.addWidget(self.kitchen_card["frame"])
+        cards_layout.addWidget(self.alerts_card["frame"])
 
         actions_frame = QFrame()
         actions_frame.setObjectName("dashboardCard")
         actions_layout = QVBoxLayout(actions_frame)
-        actions_layout.setContentsMargins(18, 18, 18, 18)
+        actions_layout.setContentsMargins(14, 14, 14, 14)
 
         actions_title = QLabel("Accesos rapidos")
         actions_title.setProperty("role", "title")
@@ -74,20 +75,40 @@ class DashboardWidget(QWidget):
         alerts_frame = QFrame()
         alerts_frame.setObjectName("dashboardCard")
         alerts_layout = QVBoxLayout(alerts_frame)
-        alerts_layout.setContentsMargins(18, 18, 18, 18)
+        alerts_layout.setContentsMargins(14, 14, 14, 14)
 
         alerts_title = QLabel("Ingredientes con prioridad")
         alerts_title.setProperty("role", "title")
 
+        # Alerts table (compact)
         self.alerts_table = QTableWidget(0, 4)
+        self.alerts_table.setObjectName("alertsTable")
         self.alerts_table.setHorizontalHeaderLabels(["Ingrediente", "Disponible", "Minimo", "Estado"])
         self.alerts_table.verticalHeader().setVisible(False)
         self.alerts_table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.alerts_table.setSelectionBehavior(QTableWidget.SelectRows)
         self.alerts_table.setAlternatingRowColors(True)
+        self.alerts_table.setMinimumHeight(180)
 
         alerts_layout.addWidget(alerts_title)
         alerts_layout.addWidget(self.alerts_table)
+
+        # Add a small charts area placeholder for future graphs
+        charts_frame = QFrame()
+        charts_frame.setObjectName("chartsPlaceholder")
+        charts_layout = QHBoxLayout(charts_frame)
+        charts_layout.setContentsMargins(0, 8, 0, 0)
+        charts_layout.setSpacing(12)
+
+        sales_chart = QFrame()
+        sales_chart.setObjectName("chartPlaceholder")
+        sales_chart.setMinimumHeight(120)
+        purchases_chart = QFrame()
+        purchases_chart.setObjectName("chartPlaceholder")
+        purchases_chart.setMinimumHeight(120)
+
+        charts_layout.addWidget(sales_chart, 1)
+        charts_layout.addWidget(purchases_chart, 1)
 
         layout.addLayout(cards_layout)
         layout.addWidget(actions_frame)

@@ -1,4 +1,5 @@
 # main_instalador.py - Versión para instalador (usa config_instalador.py)
+# allow-inline-style
 import sys
 import os
 

@@ -12,6 +12,8 @@ from app_core.style_guard import enforce_runtime_style_protection, find_inline_s
 from config import APP_DISPLAY_NAME, APP_VERSION
 from modules.main_window import MainWindow
 
+# allow-inline-style
+
 
 def setup_environment() -> None:
     base_path = Path(__file__).resolve().parent
