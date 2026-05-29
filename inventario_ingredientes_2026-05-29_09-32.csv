@@ -1,0 +1,23 @@
+Nombre              , Stock, Unidad, Mínimo, Estado
+Aceite              , 10.50, L     ,   4.00, OK
+Ajo                 , 50.00, ud    ,  10.00, OK
+Azucar              ,  5.00, lb    ,   1.00, OK
+Caldo de pollo      ,  0.00, pqt   ,   5.00, CRÍTICO
+Cebolla             ,  0.00, ud    ,  10.00, CRÍTICO
+Crema de leche      ,  0.00, lata  ,   1.00, CRÍTICO
+Fongo               ,  0.00, mano  ,   1.00, CRÍTICO
+Guayaba             ,  0.00, ud    ,  20.00, CRÍTICO
+Harina              , 18.00, lb    ,  10.00, OK
+Huevo               ,  0.00, ud    ,   5.00, CRÍTICO
+Levadura            ,  0.00, lb    ,   0.00, OK
+Masa de Hamburguesa ,  0.00, lb    ,   0.50, CRÍTICO
+Panes de Hamburguesa,  0.00, ud    ,   5.00, CRÍTICO
+Papas               , 30.00, lb    ,   1.00, OK
+Picadillo           ,  0.00, lb    ,   0.00, OK
+Puré de tomate      ,  0.00, L     ,   2.00, CRÍTICO
+Queso               ,  0.00, lb    ,   1.00, CRÍTICO
+Sal                 ,  0.00, lb    ,   0.00, OK
+Salchichas          ,  0.00, pqt   ,   1.00, CRÍTICO
+Spaghetti           ,  0.00, pqt   ,   5.00, CRÍTICO
+Termo pack          ,  0.00, ud    ,  20.00, CRÍTICO
+Vinagre             ,  0.00, L     ,   0.00, OK

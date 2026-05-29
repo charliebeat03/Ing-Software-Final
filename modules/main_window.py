@@ -9,7 +9,6 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QMainWindow,
-    QMessageBox,
     QPushButton,
     QSizePolicy,
     QStackedWidget,
@@ -21,6 +20,7 @@ from PyQt5.QtWidgets import (
 from app_core.module_registry import ModuleSpec, default_module, get_module_spec, grouped_modules
 from database import db
 from modules.module_loader import ModuleLoader
+from app_core.modals import ConfirmDialog, InfoDialog
 
 
 class MainWindow(QMainWindow):
@@ -69,6 +69,8 @@ class MainWindow(QMainWindow):
         layout.setContentsMargins(18, 18, 18, 18)
         layout.setSpacing(10)
 
+        # Top area: brand and small toggle
+        top_row = QHBoxLayout()
         title = QLabel("A Tu Gusto")
         title.setObjectName("brandTitle")
 
@@ -76,7 +78,17 @@ class MainWindow(QMainWindow):
         subtitle.setObjectName("brandSubtitle")
         subtitle.setWordWrap(True)
 
-        layout.addWidget(title)
+        # Toggle button sits on the sidebar so it's adjacent to the menu
+        self.toggle_sidebar_button = QPushButton("❮")
+        self.toggle_sidebar_button.setObjectName("sidebarToggleButton")
+        self.toggle_sidebar_button.setFixedSize(36, 36)
+        self.toggle_sidebar_button.clicked.connect(self.toggle_sidebar)
+
+        top_row.addWidget(title)
+        top_row.addStretch(1)
+        top_row.addWidget(self.toggle_sidebar_button)
+
+        layout.addLayout(top_row)
         layout.addWidget(subtitle)
 
         for group_name, specs in grouped_modules().items():
@@ -97,6 +109,14 @@ class MainWindow(QMainWindow):
         footer.setObjectName("brandSubtitle")
         footer.setAlignment(Qt.AlignCenter)
         layout.addWidget(footer)
+        # store sizes for animation
+        try:
+            self._sidebar_expanded_width = int(sidebar.maximumWidth() or 290)
+        except Exception:
+            self._sidebar_expanded_width = 290
+        self._sidebar_collapsed_width = 64
+        self._sidebar_collapsed = False
+        sidebar.setMaximumWidth(self._sidebar_expanded_width)
         return sidebar
 
     def _build_content_area(self) -> QFrame:
@@ -135,11 +155,7 @@ class MainWindow(QMainWindow):
         self.backup_button.setObjectName("quickActionButton")
         self.backup_button.clicked.connect(self.trigger_backup)
 
-        # Sidebar toggle button
-        self.toggle_sidebar_button = QPushButton("❮")
-        self.toggle_sidebar_button.setObjectName("sidebarToggleButton")
-        self.toggle_sidebar_button.setFixedSize(36, 36)
-        self.toggle_sidebar_button.clicked.connect(self.toggle_sidebar)
+        # Sidebar toggle is created on the sidebar (adjacent to menu)
 
         right_box = QVBoxLayout()
         right_box.setSpacing(4)
@@ -147,7 +163,6 @@ class MainWindow(QMainWindow):
         right_box.addWidget(self.date_label, alignment=Qt.AlignRight)
 
         header_layout.addLayout(title_box, 1)
-        header_layout.addWidget(self.toggle_sidebar_button)
         header_layout.addWidget(self.backup_button)
         header_layout.addSpacing(12)
         header_layout.addLayout(right_box)
@@ -242,28 +257,14 @@ class MainWindow(QMainWindow):
 
     def trigger_backup(self) -> None:
         backup_path = db.create_daily_backup()
-        QMessageBox.information(
-            self,
-            "Respaldo creado",
-            f"El respaldo actual se encuentra en:\n{backup_path}",
-        )
+        InfoDialog(self, "Respaldo creado", f"El respaldo actual se encuentra en:\n{backup_path}").exec_()
 
     def show_about(self) -> None:
-        QMessageBox.information(
-            self,
-            "Acerca de A Tu Gusto",
-            "Aplicacion modular para inventario, compras, cocina, ventas y cierre diario.",
-        )
+        InfoDialog(self, "Acerca de A Tu Gusto", "Aplicacion modular para inventario, compras, cocina, ventas y cierre diario.").exec_()
 
     def closeEvent(self, event) -> None:
-        reply = QMessageBox.question(
-            self,
-            "Salir",
-            "Desea cerrar la aplicacion?",
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No,
-        )
-        if reply != QMessageBox.Yes:
+        dlg = ConfirmDialog(self, "Salir", "Desea cerrar la aplicacion?")
+        if not dlg.exec_():
             event.ignore()
             return
 
@@ -274,14 +275,30 @@ class MainWindow(QMainWindow):
         event.accept()
 
     def toggle_sidebar(self) -> None:
-        """Show or hide the left sidebar."""
+        """Animate collapse/expand of the left sidebar."""
         if not hasattr(self, "sidebar") or self.sidebar is None:
             return
-        if self.sidebar.isVisible():
-            self.sidebar.hide()
-            self.toggle_sidebar_button.setText("❯")
-            self.statusBar().showMessage("Barra lateral oculta.")
+        anim = getattr(self, "_sidebar_anim", None)
+        if anim is not None:
+            try:
+                anim.stop()
+            except Exception:
+                pass
+
+        start = self.sidebar.width()
+        if not getattr(self, "_sidebar_collapsed", False):
+            end = self._sidebar_collapsed_width
         else:
-            self.sidebar.show()
-            self.toggle_sidebar_button.setText("❮")
-            self.statusBar().showMessage("Barra lateral mostrada.")
+            end = self._sidebar_expanded_width
+
+        animation = QPropertyAnimation(self.sidebar, b"maximumWidth")
+        animation.setDuration(260)
+        animation.setStartValue(start)
+        animation.setEndValue(end)
+        animation.setEasingCurve(QEasingCurve.InOutCubic)
+        animation.start()
+        self._sidebar_anim = animation
+
+        self._sidebar_collapsed = not getattr(self, "_sidebar_collapsed", False)
+        self.toggle_sidebar_button.setText("❯" if self._sidebar_collapsed else "❮")
+        self.statusBar().showMessage("Barra lateral oculta." if self._sidebar_collapsed else "Barra lateral mostrada.")

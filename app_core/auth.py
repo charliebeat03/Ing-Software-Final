@@ -104,12 +104,19 @@ class LoginDialog(QDialog):
 
         self.username_input = QLineEdit()
         self.username_input.setPlaceholderText("Usuario")
+        self.username_input.setObjectName("loginUsername")
         self.password_input = QLineEdit()
         self.password_input.setPlaceholderText("Contrasena")
         self.password_input.setEchoMode(QLineEdit.Password)
+        self.password_input.setObjectName("loginPassword")
 
         form_layout.addRow("Usuario", self.username_input)
         form_layout.addRow("Contrasena", self.password_input)
+
+        # Inline error label for credential feedback
+        self.login_error_label = QLabel("")
+        self.login_error_label.setObjectName("loginError")
+        self.login_error_label.setVisible(False)
 
         hint = QLabel(
             "Usuarios iniciales: admin/admin123, recepcion/recepcion123, "
@@ -139,6 +146,7 @@ class LoginDialog(QDialog):
         card_layout.addLayout(header_row)
         card_layout.addWidget(subtitle)
         card_layout.addLayout(form_layout)
+        card_layout.addWidget(self.login_error_label)
         card_layout.addWidget(hint)
         card_layout.addLayout(button_row)
 
@@ -153,9 +161,30 @@ class LoginDialog(QDialog):
             self.password_input.text(),
         )
         if not result.success:
-            QMessageBox.warning(self, "Acceso denegado", result.error or "No fue posible autenticar.")
+            # show inline error and mark invalid fields
+            self.login_error_label.setText(result.error or "No fue posible autenticar.")
+            self.login_error_label.setVisible(True)
+            # mark fields invalid appropriately
+            if not (self.username_input.text() or "").strip():
+                self.username_input.setProperty("invalid", True)
+            else:
+                self.username_input.setProperty("invalid", False)
+            self.password_input.setProperty("invalid", True)
+            # re-polish styles to pick up property changes
+            for w in (self.username_input, self.password_input):
+                try:
+                    w.style().unpolish(w)
+                    w.style().polish(w)
+                    w.update()
+                except Exception:
+                    pass
+            self.password_input.setFocus()
             return
 
+        # success: clear errors and accept
+        self.login_error_label.setVisible(False)
+        self.username_input.setProperty("invalid", False)
+        self.password_input.setProperty("invalid", False)
         self.authenticated_user = result.user
         self.accept()
 

@@ -21,9 +21,10 @@ QWidget {
 
 /* ---------- App shell ---------- */
 QFrame#shellSidebar {
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #123236, stop:1 #173f3b);
+    /* use a consistent solid color to avoid thin gradient artifacts */
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #0f3a36, stop:1 #123236);
     color: #eef6f5;
-    border-right: 1px solid rgba(0,0,0,0.06);
+    border-right: none;
 }
 
 QFrame#shellHeader {
@@ -270,5 +271,34 @@ QPushButton#sidebarToggleButton {
     border: 1px solid rgba(36,59,58,0.06);
 }
 QPushButton#sidebarToggleButton:hover { background: #f2f6f6; }
+
+/* Ensure sidebar labels render cleanly */
+QFrame#shellSidebar QLabel { background: transparent; padding: 2px 0; }
+
+/* Login validation / inline error */
+QLineEdit#loginUsername[invalid="true"], QLineEdit#loginPassword[invalid="true"] {
+    border: 1px solid #d32f2f;
+    background: #fff6f6;
+}
+
+QLabel#loginError {
+    color: #d32f2f;
+    font-weight: 700;
+    margin-top: 6px;
+}
+
+/* Modal dialogs (custom) */
+QFrame#modalCard {
+    background: #ffffff;
+    border: 1px solid rgba(36,59,58,0.06);
+    border-radius: 10px;
+    padding: 12px;
+}
+
+QLabel#modalMessage { color: #243b3a; font-size: 13px; }
+QPushButton#modalConfirm { background: #157a6e; color: white; border-radius: 6px; padding: 6px 12px; }
+QPushButton#modalConfirm:hover { background: #126b5f; }
+QPushButton#modalCancel { background: transparent; border: 1px solid rgba(36,59,58,0.06); color: #243b3a; border-radius: 6px; padding: 6px 12px; }
+
 
 /* END OF CENTRAL STYLESHEET */
