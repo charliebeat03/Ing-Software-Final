@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+# Virtual environment
+venv/
+# Archive (moved artefacts)
+archive/
+# Build and distribution
+build/
+dist/
+Output/
+release/
+# Installer and build scripts
+*.spec
+installer.iss
+build_exe.py
+build_all_in_one.py
+build_installer.bat
+upx.exe
+# Editor
+.vscode/
+# Data backups
+data/*.backup_*

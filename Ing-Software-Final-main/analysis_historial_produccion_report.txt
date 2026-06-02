@@ -1,0 +1,116 @@
+=== FILE: historial.py ===
+-- Head (first 300 chars) --
+"""
+Módulo de Historial y Reportes para el sistema "A TU GUSTO"
+v2.0 - Integrado con database.py optimizado
+"""
+
+from datetime import datetime, timedelta
+from PyQt5.QtCore import QObject, pyqtSignal
+from database import db
+
+class HistorialManager(QObject):
+    """Gestor principal de historial y repo
+...[truncated]
+Syntax: OK
+Imports:
+  from datetime import datetime,timedelta
+  from PyQt5.QtCore import QObject,pyqtSignal
+  from database import db
+Top-level defs (name, type):
+  HistorialManager (class)
+Suspicious patterns:
+  - Calls print()
+
+
+=== FILE: historial_ui.py ===
+-- Head (first 300 chars) --
+# modules/historial_ui.py
+from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
+                             QTableWidget, QTableWidgetItem, QDateEdit, 
+                             QComboBox, QPushButton, QSplitter, QGroupBox,
+                             QFormLayout, QFrame, QHe
+...[truncated]
+Syntax: OK
+Imports:
+  from PyQt5.QtWidgets import QWidget,QVBoxLayout,QHBoxLayout,QLabel,QTableWidget,QTableWidgetItem,QDateEdit,QComboBox,QPushButton,QSplitter,QGroupBox,QFormLayout,QFrame,QHeaderView,QMessageBox,QTabWidget,QProgressBar,QGridLayout
+  from PyQt5.QtCore import Qt,QDate,pyqtSlot
+  from PyQt5.QtGui import QFont,QColor,QBrush
+  from datetime import datetime
+  import locale as None
+  from modules.historial import HistorialManager
+Top-level defs (name, type):
+  HistorialWidget (class)
+Suspicious patterns:
+  - Bare except found
+  - Calls print()
+  - Contains pass statements
+
+
+=== FILE: produccion.py ===
+-- Head (first 300 chars) --
+# modules/produccion.py - VERSIÓN CORREGIDA COMPLETA v2.0
+import traceback
+import sqlite3
+from datetime import datetime
+from utils.safe_output import safe_print as print
+
+class ProduccionManager:
+    def __init__(self, db_path=None):
+        try:
+            from database import db
+            self.
+...[truncated]
+Syntax: OK
+Imports:
+  import traceback as None
+  import sqlite3 as None
+  from datetime import datetime
+  from utils.safe_output import safe_print
+Top-level defs (name, type):
+  ProduccionManager (class)
+Suspicious patterns:
+  - Contains TODO/FIXME
+  - Bare except found
+  - Calls print()
+
+
+=== FILE: produccion_ui.py ===
+-- Head (first 300 chars) --
+# modules/produccion_ui.py
+import os
+import sys
+from pathlib import Path
+from PyQt5.QtWidgets import (
+    QWidget, QVBoxLayout, QHBoxLayout, QTableWidget,
+    QTableWidgetItem, QPushButton, QLabel, QGroupBox,
+    QHeaderView, QMessageBox, QFrame, QGridLayout,
+    QSpinBox, QComboBox, QTextEdit, QSp
+...[truncated]
+Syntax: OK
+Imports:
+  import os as None
+  import sys as None
+  from pathlib import Path
+  from PyQt5.QtWidgets import QWidget,QVBoxLayout,QHBoxLayout,QTableWidget,QTableWidgetItem,QPushButton,QLabel,QGroupBox,QHeaderView,QMessageBox,QFrame,QGridLayout,QSpinBox,QComboBox,QTextEdit,QSplitter,QSizePolicy,QApplication
+  from PyQt5.QtCore import Qt
+  from PyQt5.QtGui import QFont
+  from modules.produccion import ProduccionManager
+  from modules.catalogos import CatalogoManager
+  from utils.date_utils import get_current_date,format_date
+Top-level defs (name, type):
+  ProduccionWidget (class)
+Suspicious patterns:
+  - Contains TODO/FIXME
+  - Calls print()
+  - Contains pass statements
+
+
+
+
+---
+## Resumen de correcciones aplicadas
+- Ajustado `modules/produccion.py` para usar la firma correcta de `VentasManager.registrar_venta`.
+- Añadida conexión de señal y actualización de UI en `modules/historial_ui.py`.
+- Se mantuvo sin cambios la hoja de estilos global (`styles.qss`).
+- Documentado el arreglo en `docs/historial_produccion_fixes.md`.
