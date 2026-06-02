@@ -1,0 +1,5 @@
+INSTRUCCIONES DE INSTALACIÓN 
+ 
+Para soporte: WhatsApp +53 59086563 
+ 
+Módulos instalados en: %APPDATA%\CodexiaSystems\Inventory\modules 
