@@ -1,4 +1,4 @@
-# modules/pedidos_chef_ui.py
+# modules/pedidos_chef_ui.py - Copia corregida
 import traceback
 from datetime import datetime
 from PyQt5.QtWidgets import (
@@ -275,10 +275,9 @@ class PedidosChefWidget(QWidget):
         
         # Guardar referencia
         self.splitter = splitter
-    
+
     def apply_specific_styles(self):
         """Aplica estilos específicos"""
-        # Convertir a objectName/properties para QSS central
         self.setObjectName("pedidosChefWidget")
         try:
             self.pedidos_table.setObjectName("pedidosTable")
@@ -291,7 +290,7 @@ class PedidosChefWidget(QWidget):
         self.limpiar_btn.setProperty("role", "action")
         self.pedidos_table.setAlternatingRowColors(True)
         self.historial_table.setAlternatingRowColors(True)
-    
+
     def connect_signals(self):
         """Conecta todas las señales"""
         self.ingrediente_combo.currentIndexChanged.connect(self.actualizar_stock_info)
@@ -300,37 +299,34 @@ class PedidosChefWidget(QWidget):
         self.actualizar_btn.clicked.connect(self.force_refresh_all)
         self.detalle_btn.clicked.connect(self.cargar_historial_detalle)
         self.limpiar_btn.clicked.connect(self.limpiar_seleccion)
-    
+
     def load_initial_data(self):
         """Carga los datos iniciales"""
         self.actualizar_fecha()
         self.cargar_ingredientes()
         self.force_refresh_all()
-    
+
     def setup_tables(self):
         """Configura las tablas"""
-        # Tabla de pedidos acumulados (superior)
         header = self.pedidos_table.horizontalHeader()
         header.setDefaultSectionSize(100)
-        header.setSectionResizeMode(0, QHeaderView.Stretch)    # Ingrediente
-        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)  # Cantidad
-        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)  # Unidad
-        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)  # Pedidos
-        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)  # Última Hora
-        header.setSectionResizeMode(5, QHeaderView.ResizeToContents)  # ID
-        
-        # Tabla de historial (inferior) - 6 columnas visibles
+        header.setSectionResizeMode(0, QHeaderView.Stretch)
+        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(5, QHeaderView.ResizeToContents)
+
         header = self.historial_table.horizontalHeader()
         header.setDefaultSectionSize(80)
-        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)  # ID
-        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)  # Hora
-        header.setSectionResizeMode(2, QHeaderView.Stretch)          # Ingrediente
-        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)  # Cantidad
-        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)  # Unidad
-        header.setSectionResizeMode(5, QHeaderView.Stretch)          # Motivo
-    
+        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.Stretch)
+        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(5, QHeaderView.Stretch)
+
     def actualizar_fecha(self):
-        """Actualiza la fecha en la interfaz"""
         try:
             fecha_actual = datetime.now().date()
             fecha_formateada = fecha_actual.strftime("%d/%m/%Y")
@@ -338,15 +334,11 @@ class PedidosChefWidget(QWidget):
         except Exception as e:
             print(f"Error actualizando fecha: {e}")
             self.fecha_label.setText("Fecha: No disponible")
-    
+
     def cargar_ingredientes(self):
-        """Carga la lista de ingredientes"""
         try:
             print("🔄 PedidosChefWidget.cargar_ingredientes...")
-            
-            # Usar el método del manager
             ingredientes_data = self.pedidos_manager.cargar_ingredientes()
-            
             self.ingrediente_combo.clear()
             
             if not ingredientes_data:
@@ -367,21 +359,19 @@ class PedidosChefWidget(QWidget):
         except Exception as e:
             print(f"❌ ERROR cargando ingredientes: {str(e)}")
             self.ingrediente_combo.addItem("Error cargando ingredientes", -1)
-    
+
     def actualizar_stock_info(self):
-        """Actualiza la información de stock"""
         try:
             index = self.ingrediente_combo.currentIndex()
             if index < 0:
                 return
             
             ingrediente_id = self.ingrediente_combo.itemData(index)
-            if not ingrediente_id or ingrediente_id == -1:
+            if ingrediente_id is None or ingrediente_id == -1:
                 self.stock_info_label.setText("Disponible: -")
                 self.unidad_label.setText("kg")
                 return
             
-            # Obtener información del ingrediente
             ingredientes_data = self.pedidos_manager.cargar_ingredientes()
             ingrediente_actual = None
             
@@ -395,7 +385,6 @@ class PedidosChefWidget(QWidget):
                 self.unidad_label.setText("kg")
                 return
             
-            # Obtener stock actual
             stock_disponible = 0
             try:
                 inventario = self.inventario_manager.obtener_inventario_ingredientes()
@@ -406,29 +395,25 @@ class PedidosChefWidget(QWidget):
             except Exception as e:
                 print(f"⚠️ Error obteniendo inventario: {e}")
             
-            # Actualizar etiquetas
             self.unidad_label.setText(ingrediente_actual.get('unidad', 'kg'))
             self.stock_info_label.setText(f"Disponible: {stock_disponible} {ingrediente_actual.get('unidad', 'kg')}")
             
         except Exception as e:
             print(f"❌ Error actualizando stock: {e}")
             self.stock_info_label.setText("Disponible: Error")
-    
+
     def cargar_pedidos_dia(self):
-        """Carga los pedidos acumulados del día (TABLA SUPERIOR)"""
         try:
             print("🔄 PedidosChefWidget.cargar_pedidos_dia()...")
             pedidos = self.pedidos_manager.obtener_pedidos_dia()
             
             print(f"📊 Pedidos acumulados obtenidos: {len(pedidos)} registros")
             
-            # Limpiar completamente la tabla
             self.pedidos_table.setRowCount(0)
             
             total_cantidad = 0.0
             
             for i, pedido in enumerate(pedidos):
-                # Obtener datos
                 ingrediente_nombre = pedido.get('ingrediente_nombre', 'Desconocido')
                 cantidad = pedido.get('cantidad', 0)
                 unidad = pedido.get('unidad', 'unidad')
@@ -436,16 +421,13 @@ class PedidosChefWidget(QWidget):
                 ultima_hora = pedido.get('ultima_hora', '--:--')
                 pedido_id = pedido.get('id', '')
                 
-                # Convertir a números
                 try:
                     cantidad_num = float(cantidad)
                 except (ValueError, TypeError):
                     cantidad_num = 0
                 
-                # Agregar fila
                 self.pedidos_table.insertRow(i)
                 
-                # Agregar datos a la tabla
                 self.pedidos_table.setItem(i, 0, QTableWidgetItem(str(ingrediente_nombre)))
                 self.pedidos_table.setItem(i, 1, QTableWidgetItem(f"{cantidad_num:.3f}"))
                 self.pedidos_table.setItem(i, 2, QTableWidgetItem(str(unidad)))
@@ -453,23 +435,18 @@ class PedidosChefWidget(QWidget):
                 self.pedidos_table.setItem(i, 4, QTableWidgetItem(str(ultima_hora)))
                 self.pedidos_table.setItem(i, 5, QTableWidgetItem(str(pedido_id)))
                 
-                # Centrar columnas
                 for col in [1, 2, 3, 4, 5]:
                     item = self.pedidos_table.item(i, col)
                     if item:
                         item.setTextAlignment(Qt.AlignCenter)
                 
-                # Acumular totales
                 total_cantidad += cantidad_num
             
-            # Actualizar etiquetas de totales
             self.total_ingredientes_label.setText(f"Total hoy: {total_cantidad:.3f}")
             
-            # Ajustar alto de filas
             for i in range(self.pedidos_table.rowCount()):
                 self.pedidos_table.setRowHeight(i, 24)
             
-            # Si no hay pedidos, mostrar mensaje
             if len(pedidos) == 0:
                 print("ℹ️ No hay pedidos para mostrar hoy")
                 self.pedidos_table.setRowCount(1)
@@ -483,20 +460,17 @@ class PedidosChefWidget(QWidget):
             print(f"❌ Error cargando pedidos del día: {e}")
             import traceback
             traceback.print_exc()
-    
+
     def cargar_historial_detalle(self):
-        """Carga el historial detallado de pedidos (TABLA INFERIOR)"""
         try:
             print("🔄 PedidosChefWidget.cargar_historial_detalle()...")
             detalles = self.pedidos_manager.obtener_detalle_pedidos_dia()
             
             print(f"📊 Historial obtenido: {len(detalles)} registros")
             
-            # Limpiar completamente la tabla
             self.historial_table.setRowCount(0)
             
             for i, item in enumerate(detalles):
-                # Obtener datos
                 detalle_id = item.get('detalle_id', '')
                 hora = item.get('hora', '--:--')
                 ingrediente_nombre = item.get('ingrediente_nombre', 'Desconocido')
@@ -504,20 +478,16 @@ class PedidosChefWidget(QWidget):
                 unidad = item.get('unidad', 'unidad')
                 motivo = item.get('motivo', 'Sin motivo')
                 
-                # Convertir a números
                 try:
                     cantidad_num = float(cantidad)
                 except (ValueError, TypeError):
                     cantidad_num = 0
                 
-                # Formatear hora (si es necesario)
                 if isinstance(hora, str) and len(hora) > 8:
                     hora = hora[:8]
                 
-                # Agregar fila
                 self.historial_table.insertRow(i)
                 
-                # Agregar a la tabla - SOLO LAS 6 COLUMNAS VISIBLES
                 self.historial_table.setItem(i, 0, QTableWidgetItem(str(detalle_id)))
                 self.historial_table.setItem(i, 1, QTableWidgetItem(str(hora)))
                 self.historial_table.setItem(i, 2, QTableWidgetItem(str(ingrediente_nombre)))
@@ -525,17 +495,14 @@ class PedidosChefWidget(QWidget):
                 self.historial_table.setItem(i, 4, QTableWidgetItem(str(unidad)))
                 self.historial_table.setItem(i, 5, QTableWidgetItem(str(motivo)))
                 
-                # Centrar columnas
                 for col in [0, 1, 3, 4]:
                     item_widget = self.historial_table.item(i, col)
                     if item_widget:
                         item_widget.setTextAlignment(Qt.AlignCenter)
             
-            # Ajustar alto de filas
             for i in range(self.historial_table.rowCount()):
                 self.historial_table.setRowHeight(i, 24)
             
-            # Si no hay historial, mostrar mensaje
             if len(detalles) == 0:
                 print("ℹ️ No hay historial para mostrar hoy")
                 self.historial_table.setRowCount(1)
@@ -549,58 +516,48 @@ class PedidosChefWidget(QWidget):
             print(f"❌ Error cargando historial: {e}")
             import traceback
             traceback.print_exc()
-    
+
     def limpiar_seleccion(self):
-        """Limpia la selección en las tablas"""
         self.pedidos_table.clearSelection()
         self.historial_table.clearSelection()
-    
+
     def force_refresh_all(self):
-        """Fuerza la actualización completa de todos los datos"""
         print("🔄 FORZANDO ACTUALIZACIÓN COMPLETA...")
         
         try:
-            # Actualizar ambas tablas
             self.cargar_pedidos_dia()
             self.cargar_historial_detalle()
             
-            # Actualizar información del ingrediente actual
             if self.ingrediente_combo.currentIndex() >= 0:
                 self.actualizar_stock_info()
             
-            # Actualizar fecha
             self.actualizar_fecha()
             
             print("✅ Actualización completa exitosa")
             
         except Exception as e:
             print(f"❌ Error en actualización forzada: {e}")
-    
+
     def agregar_pedido(self):
-        """Agrega un nuevo pedido del chef"""
         try:
-            # Validar selección de ingrediente
             if self.ingrediente_combo.currentIndex() < 0:
                 QMessageBox.warning(self, "Validación", "Debe seleccionar un ingrediente")
                 return
             
             ingrediente_id = self.ingrediente_combo.itemData(self.ingrediente_combo.currentIndex())
-            if not ingrediente_id or ingrediente_id == -1:
+            if ingrediente_id is None or ingrediente_id == -1:
                 QMessageBox.warning(self, "Validación", "Ingrediente no válido")
                 return
             
             ingrediente_nombre = self.ingrediente_combo.currentText().split("(")[0].strip()
             
-            # Validar cantidad
             cantidad = self.cantidad_input.value()
             if cantidad <= 0:
                 QMessageBox.warning(self, "Validación", "La cantidad debe ser mayor a 0")
                 return
             
-            # Obtener motivo
             motivo = self.motivo_input.toPlainText().strip()
             
-            # Confirmar acción
             reply = QMessageBox.question(
                 self, 'Confirmar Pedido',
                 f'¿Agregar pedido de {cantidad} {self.unidad_label.text()} '
@@ -610,15 +567,12 @@ class PedidosChefWidget(QWidget):
             )
             
             if reply == QMessageBox.Yes:
-                # Mostrar estado de procesamiento
                 self.agregar_btn.setEnabled(False)
                 QApplication.processEvents()
                 
-                # Agregar pedido
                 resultado = self.pedidos_manager.agregar_pedido(ingrediente_id, cantidad, motivo)
                 
                 if resultado['success']:
-                    # Obtener hora actual para mostrar
                     hora_actual = datetime.now().strftime('%H:%M:%S')
                     
                     QMessageBox.information(
@@ -627,39 +581,34 @@ class PedidosChefWidget(QWidget):
                         f"Pedido registrado correctamente a las {hora_actual}."
                     )
                     
-                    # Limpiar formulario
                     self.motivo_input.clear()
                     self.cantidad_input.setValue(0.5)
                     
-                    # Forzar actualización inmediata
                     self.force_refresh_all()
                     
                 else:
                     QMessageBox.critical(self, "Error", 
                         f"No se pudo registrar el pedido:\n{resultado.get('error', 'Error desconocido')}")
                 
-                # Reactivar botón
                 self.agregar_btn.setEnabled(True)
                 
         except Exception as e:
             QMessageBox.critical(self, "Error", f"No se pudo registrar el pedido:\n{str(e)}")
             self.agregar_btn.setEnabled(True)
-    
+
     def cancelar_ultimo_pedido(self):
-        """Cancela el último pedido del ingrediente seleccionado"""
         try:
             if self.ingrediente_combo.currentIndex() < 0:
                 QMessageBox.warning(self, "Validación", "Debe seleccionar un ingrediente")
                 return
             
             ingrediente_id = self.ingrediente_combo.itemData(self.ingrediente_combo.currentIndex())
-            if not ingrediente_id or ingrediente_id == -1:
+            if ingrediente_id is None or ingrediente_id == -1:
                 QMessageBox.warning(self, "Validación", "Ingrediente no válido")
                 return
             
             ingrediente_nombre = self.ingrediente_combo.currentText().split("(")[0].strip()
             
-            # Verificar si hay pedidos para cancelar
             try:
                 detalles = self.pedidos_manager.obtener_detalle_pedidos_dia()
                 pedidos_ingrediente = [p for p in detalles if p.get('ingrediente_nombre') == ingrediente_nombre]
@@ -671,7 +620,6 @@ class PedidosChefWidget(QWidget):
                 QMessageBox.warning(self, "Sin Pedidos", f"No hay pedidos de {ingrediente_nombre} para cancelar")
                 return
             
-            # Confirmar cancelación
             reply = QMessageBox.question(
                 self, 'Confirmar Cancelación',
                 f'¿Cancelar el último pedido de "{ingrediente_nombre}"?\n\n'
@@ -682,11 +630,9 @@ class PedidosChefWidget(QWidget):
             )
             
             if reply == QMessageBox.Yes:
-                # Mostrar estado de procesamiento
                 self.cancelar_btn.setEnabled(False)
                 QApplication.processEvents()
                 
-                # Cancelar pedido
                 resultado = self.pedidos_manager.cancelar_ultimo_pedido(ingrediente_id)
                 
                 if resultado['success']:
@@ -697,42 +643,36 @@ class PedidosChefWidget(QWidget):
                         f"Se devolvieron {resultado['cantidad_devuelta']} al inventario."
                     )
                     
-                    # Forzar actualización inmediata
                     self.force_refresh_all()
                     
                 else:
                     QMessageBox.critical(self, "Error", 
                         f"No se pudo cancelar el pedido:\n{resultado.get('error', 'Error desconocido')}")
                 
-                # Reactivar botón
                 self.cancelar_btn.setEnabled(True)
                 
         except Exception as e:
             QMessageBox.critical(self, "Error", f"No se pudo cancelar el pedido:\n{str(e)}")
             self.cancelar_btn.setEnabled(True)
-    
+
     def cancelar_pedido_por_id(self, detalle_id):
-        """Cancela un pedido específico por ID (seleccionando la fila)"""
         try:
-            # Buscar el detalle_id en la tabla
             selected_items = self.historial_table.selectedItems()
             if not selected_items:
                 QMessageBox.warning(self, "Selección", "Seleccione un pedido de la tabla para cancelar")
                 return
             
-            # Obtener información del pedido seleccionado
             row = selected_items[0].row()
             detalle_id_item = self.historial_table.item(row, 0)
             if not detalle_id_item:
                 QMessageBox.warning(self, "Error", "No se pudo obtener el ID del pedido seleccionado")
                 return
             
-            detalle_id = detalle_id_item.text()
+            detalle_id = int(detalle_id_item.text())
             ingrediente_nombre = self.historial_table.item(row, 2).text()
             cantidad = self.historial_table.item(row, 3).text()
             hora = self.historial_table.item(row, 1).text()
             
-            # Confirmar cancelación
             reply = QMessageBox.question(
                 self, 'Confirmar Cancelación',
                 f'¿Cancelar el pedido de {ingrediente_nombre} a las {hora}?\n\n'
@@ -752,7 +692,6 @@ class PedidosChefWidget(QWidget):
                         f"Se devolvieron {resultado['cantidad_devuelta']} al inventario."
                     )
                     
-                    # Forzar actualización inmediata
                     self.force_refresh_all()
                     
                 else:
@@ -761,9 +700,8 @@ class PedidosChefWidget(QWidget):
                     
         except Exception as e:
             QMessageBox.critical(self, "Error", f"No se pudo cancelar el pedido:\n{str(e)}")
-    
+
     def resizeEvent(self, event):
-        """Maneja el redimensionamiento"""
         super().resizeEvent(event)
         
         if hasattr(self, 'splitter'):
@@ -771,9 +709,8 @@ class PedidosChefWidget(QWidget):
             left_size = max(250, int(width * 0.3))
             right_size = max(400, int(width * 0.7))
             self.splitter.setSizes([left_size, right_size])
-    
+
     def closeEvent(self, event):
-        """Limpia recursos al cerrar el widget"""
         if hasattr(self, 'update_timer') and self.update_timer.isActive():
             self.update_timer.stop()
             print("✅ Timer de actualización detenido")
